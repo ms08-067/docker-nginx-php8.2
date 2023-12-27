@@ -4,6 +4,8 @@ The `docker-compose.*.yml` files can be used as base for stack deployments. Some
 
 ## Working locally
 
+
+
 1. Build the custom image (this step needs to be redone, everytime you change something in the image):
  `docker-compose -f docker-compose.local.yml build`
 2. Deploy the containers locally: `UID=(id -u) GID=(id -g) docker-compose -f docker-compose.local.yml up`
