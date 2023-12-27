@@ -2,6 +2,7 @@
 
 The `docker-compose.*.yml` files can be used as base for stack deployments. Some environment variables have to be set in order to work properly.
 
+
 ## Working locally
 
 1. Build the custom image (this step needs to be redone, everytime you change something in the image):
