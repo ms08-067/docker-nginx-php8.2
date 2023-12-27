@@ -1,0 +1,34 @@
+version: '3.8'
+services:
+  nginx:
+    build:
+      context: .
+      dockerfile: nginx/Dockerfile
+    container_name: hocphp_nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    volumes:
+      - .:/var/www/src/alpine
+    networks:
+      - internal
+  hocphp:
+    build:
+      context: .
+      args:
+        - CONTAINER_ENV=local
+        - LOCAL_UID=2107
+        - LOCAL_GID=2213
+    container_name: hocphp
+    restart: unless-stopped
+    command: ["/opt/startup.sh"]
+    environment:
+      - CONTAINER_ENV=local
+      - EDITOR=/usr/bin/nano
+    volumes:
+      - .:/var/www/src/alpine
+    networks:
+      - internal
+networks:
+  internal:
+    driver: bridge
