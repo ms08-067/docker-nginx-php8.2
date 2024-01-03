@@ -5,8 +5,8 @@ ENV TZ=Asia/Ho_Chi_Minh
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime \
     && echo $TZ > /etc/timezone \
     && mkdir -p /var/run/php/ \
-    && mkdir -p /var/www/src/alpine
-RUN apt-get update \
+    && mkdir -p /var/www/src/alpine \
+    && apt-get update \
     && apt-get upgrade -y \
     && apt-get install supervisor libicu-dev zlib1g-dev libpng-dev libzip-dev libxml2-dev libonig-dev libldap2-dev libgmp-dev cron sudo -y \
     && apt-get install libcurl4-openssl-dev \
@@ -30,16 +30,14 @@ COPY supervisord.conf /etc/supervisord.conf
 COPY startup.sh /opt/startup.sh
 COPY . /var/www/src/alpine
 
-RUN whoami
-RUN echo "change user to local UID $LOCAL_UID"
-RUN usermod -u $LOCAL_UID www-data
-RUN echo "change user group to local GID $LOCAL_GID"
-RUN groupmod -g $LOCAL_GID www-data
-
-RUN chown -R root:www-data /var/www/src/alpine
-RUN chmod 777 -R /var/www/src/alpine
-
-RUN mkdir -p /run/nginx \
+RUN whoami \
+    && echo "change user to local UID $LOCAL_UID" \
+    && usermod -u $LOCAL_UID www-data \
+    && echo "change user group to local GID $LOCAL_GID" \
+    && groupmod -g $LOCAL_GID www-data \
+    && chown -R root:www-data /var/www/src/alpine \
+    && chmod 777 -R /var/www/src/alpine \
+    && mkdir -p /run/nginx \
     && mkdir -p /var/lib/nginx/ \
     && rm -f /etc/nginx/sites-enabled/default \
     && rm -f /etc/nginx/sites-available/default \
