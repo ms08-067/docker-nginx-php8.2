@@ -5,17 +5,18 @@ ENV TZ=Asia/Ho_Chi_Minh
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime \
     && echo $TZ > /etc/timezone \
     && mkdir -p /var/run/php/ \
-    && mkdir -p /var/www/src/alpine \
-    && apt-get update \
-    && apt-get upgrade -y \
-    && apt-get install supervisor libicu-dev zlib1g-dev libpng-dev libzip-dev libxml2-dev libonig-dev libldap2-dev libgmp-dev cron sudo -y \
-    && apt-get install libcurl4-openssl-dev \
-    && docker-php-ext-install curl intl gd zip xml mbstring ldap gmp
+    && mkdir -p /var/www/src/alpine
 
-RUN curl -sS https://getcomposer.org/installer -o composer-setup.php \
+RUN apt-get update \
+    && apt-get upgrade -y \
+    && apt-get install libicu-dev libxml2-dev libonig-dev libpng-dev libzip-dev zlib1g-dev libldap2-dev libgmp-dev cron libcurl4-openssl-dev -y \
+    && apt-get install unzip zip curl awscli pdftk git supervisor wait-for-it bash nano aria2 iputils-ping pv rsync tree mariadb-client sudo -y \
+    && docker-php-ext-install curl intl gd zip xml mbstring ldap gmp \
+    && curl -sS https://getcomposer.org/installer -o composer-setup.php \
     && php composer-setup.php --install-dir=/usr/local/bin --filename=composer \
     && curl -sLS https://deb.nodesource.com/setup_$NODE_VERSION.x | bash \
-    && apt-get install -y nodejs
+    && apt-get install -y nodejs \
+    && mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
 
 WORKDIR /var/www/src/alpine
 
@@ -25,7 +26,6 @@ ARG AWS_SECRET_ACCESS_KEY
 ARG LOCAL_UID
 ARG LOCAL_GID
 
-RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
 COPY supervisord.conf /etc/supervisord.conf
 COPY startup.sh /opt/startup.sh
 COPY . /var/www/src/alpine
